@@ -51,8 +51,6 @@ import os
 
 #For production
 import chromedriver_autoinstaller
-chromedriver_path = chromedriver_autoinstaller.install()
-service = Service(chromedriver_path)
 
 user_data_dir = tempfile.mkdtemp()
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -96,6 +94,9 @@ def get_latest_file(directory):
 
 def get_logiwa_file(job_code=None, date=None, client=None, progress_callback=None):
 
+    chromedriver_path = chromedriver_autoinstaller.install()
+    service = Service(chromedriver_path)
+
     chrome_options = Options()
     chrome_options.add_argument("--headless")  
     chrome_options.add_argument(f"--user-data-dir={user_data_dir}")
@@ -104,7 +105,7 @@ def get_logiwa_file(job_code=None, date=None, client=None, progress_callback=Non
     #For develpment
     # chrome_options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
     #For production
-    chrome_options.binary_location = "/usr/bin/chromium"
+    # chrome_options.binary_location = "/usr/bin/chromium"
     chrome_options.add_experimental_option("prefs", {
         "download.default_directory": download_path,
         "download.prompt_for_download": False,
@@ -112,7 +113,7 @@ def get_logiwa_file(job_code=None, date=None, client=None, progress_callback=Non
         "safebrowsing.enabled": True
     })
 
-    service = Service(ChromeDriverManager().install())
+    # service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=chrome_options)
 
     if progress_callback:
