@@ -50,9 +50,9 @@ import os
 
 
 #For production
-# import chromedriver_autoinstaller
-# chromedriver_path = chromedriver_autoinstaller.install()
-# service = Service(chromedriver_path)
+import chromedriver_autoinstaller
+chromedriver_path = chromedriver_autoinstaller.install()
+service = Service(chromedriver_path)
 
 user_data_dir = tempfile.mkdtemp()
 script_dir = os.path.dirname(os.path.abspath(__file__))
