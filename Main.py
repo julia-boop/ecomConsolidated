@@ -102,10 +102,9 @@ def get_logiwa_file(job_code=None, date=None, client=None, progress_callback=Non
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     #For develpment
-    chrome_options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-
+    # chrome_options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
     #For production
-    # chrome_options.binary_location = "/usr/bin/chromium"
+    chrome_options.binary_location = "/usr/bin/chromium"
     chrome_options.add_experimental_option("prefs", {
         "download.default_directory": download_path,
         "download.prompt_for_download": False,
