@@ -337,4 +337,9 @@ def generate_pdf_report_for_client(client_df, return_bytes=False):
 
 # Production entry point
 if __name__ == "__main__":
-    socketio.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    import eventlet
+    import eventlet.wsgi
+
+    port = int(os.environ.get("PORT", 5050))
+    socketio.run(app, host="0.0.0.0", port=port)
+
