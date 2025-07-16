@@ -64,7 +64,6 @@ trio-websocket==0.12.2
 typing_extensions==4.13.2
 tzdata==2025.2
 urllib3==2.4.0
-weasyprint==65.1
 webdriver-manager==4.0.2
 webencodings==0.5.1
 websocket-client==1.8.0

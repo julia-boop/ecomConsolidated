@@ -42,7 +42,6 @@ import pathlib
 import pandas as pd
 import barcode
 from barcode.writer import ImageWriter
-from weasyprint import HTML
 from datetime import datetime
 from flask import send_file
 from io import BytesIO
