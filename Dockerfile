@@ -27,4 +27,4 @@ ENV FLASK_ENV=production
 EXPOSE 5000
 
 # Run app with eventlet (or switch to gunicorn-eventlet if preferred)
-CMD ["gunicorn", "--worker-class", "eventlet", "-w", "1", "--bind", "0.0.0.0:5050", "app:app"]
+CMD ["gunicorn", "--worker-class", "eventlet", "-w", "1", "--bind", "0.0.0.0:5000", "app:app"]
