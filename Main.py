@@ -40,7 +40,7 @@ from openpyxl import load_workbook
 from openpyxl.styles import Font, Alignment
 import pathlib
 import pandas as pd
-import barcode
+from barcode import Code128
 from barcode.writer import ImageWriter
 from datetime import datetime
 from flask import send_file
@@ -319,7 +319,7 @@ def process_file(file, progress_callback=None):
         if pd.notna(logiwa_order) and logiwa_order.strip() != "":
             logiwa_filename = os.path.join(barcode_dir, f"logiwa_{idx}")
             absolute_path = pathlib.Path(logiwa_filename).resolve().as_uri()
-            barcode.get('code128', logiwa_order, writer=ImageWriter()).save(logiwa_filename)
+            Code128(logiwa_order, writer=ImageWriter()).save(logiwa_filename)
             df.at[idx, "Logiwa Barcode"] = f'<img src="{absolute_path}.png" style="max-height:95px; max-width:300px; width:200px;" />'
         else:
             df.at[idx, "Logiwa Barcode"] = ''
@@ -329,7 +329,7 @@ def process_file(file, progress_callback=None):
         if pd.notna(job_code) and job_code.strip() != "":
             job_filename = os.path.join(barcode_dir, f"job_{idx}")
             absolute_path = pathlib.Path(job_filename).resolve().as_uri()
-            barcode.get('code128', job_code, writer=ImageWriter()).save(job_filename)
+            Code128(logiwa_order, writer=ImageWriter()).save(logiwa_filename)
             df.at[idx, "Job Barcode"] = f'<img src="{absolute_path}.png" style="max-height:80px; max-width:250px;" />'
         else:
             df.at[idx, "Job Barcode"] = ''
