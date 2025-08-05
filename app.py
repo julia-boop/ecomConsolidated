@@ -228,14 +228,14 @@ def handle_generate(data):
     start_time = time.time()
 
     try:
-        date = data.get('date', '')
+        # date = data.get('date', '')
         job_code = data.get('job_code', '')
         client = data.get('client', '')
 
         def progress(msg):
             emit("progress", msg)
 
-        file_path = get_logiwa_file(job_code=job_code, date=date, client=client, progress_callback=progress)
+        file_path = get_logiwa_file(job_code=job_code, date=None, client=client, progress_callback=progress)
 
         if not file_path:
             emit("error", "No file downloaded from Logiwa.", broadcast=True)

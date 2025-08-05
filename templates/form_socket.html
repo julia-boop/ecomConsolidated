@@ -41,11 +41,11 @@
         <div id="formScreen">
             <h2 class="text-center mb-4">📦 Logiwa PDF Report Generator</h2>
             <form id="reportForm">
-                <div class="mb-3">
+                <!-- <div class="mb-3">
                     <label class="form-label">Date Range</label>
                     <input type="text" id="dateStart" class="form-control mb-2" placeholder="Start Date">
                     <input type="text" id="dateEnd" class="form-control" placeholder="End Date">
-                </div>
+                </div> -->
                 <div class="mb-3">
                     <label for="job_code" class="form-label">Job Code</label>
                     <input type="text" class="form-control" name="job_code" id="job_code" placeholder="e.g. J130600" >
@@ -108,23 +108,23 @@
         form.onsubmit = function (e) {
             e.preventDefault();
 
-            const startRaw = document.querySelector("input#dateStart")._flatpickr.selectedDates[0];
-            const endRaw = document.querySelector("input#dateStart")._flatpickr.selectedDates[1];
+            // const startRaw = document.querySelector("input#dateStart")._flatpickr.selectedDates[0];
+            // const endRaw = document.querySelector("input#dateStart")._flatpickr.selectedDates[1];
 
-            const formatDate = (date) => {
-            const pad = (n) => String(n).padStart(2, '0');
-            return `${pad(date.getMonth() + 1)}.${pad(date.getDate())}.${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
-            };
+            // const formatDate = (date) => {
+            // const pad = (n) => String(n).padStart(2, '0');
+            // return `${pad(date.getMonth() + 1)}.${pad(date.getDate())}.${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+            // };
 
-            let dateRange = "";
-            if (startRaw && endRaw) {
-            dateRange = `${formatDate(startRaw)} - ${formatDate(endRaw)}`;
-            }
+            // let dateRange = "";
+            // if (startRaw && endRaw) {
+            // dateRange = `${formatDate(startRaw)} - ${formatDate(endRaw)}`;
+            // }
 
-            console.log(dateRange)
+            // console.log(dateRange)
 
             const data = {
-                date: dateRange,
+                // date: dateRange,
                 job_code: document.getElementById("job_code").value,
                 client: document.getElementById("client").value
             };

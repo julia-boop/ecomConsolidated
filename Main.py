@@ -163,17 +163,17 @@ def get_logiwa_file(job_code=None, date=None, client=None, progress_callback=Non
 
     time.sleep(10)  
 
-    date_input = driver.find_element(By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[2]/div/div[2]/div[2]/div/input")
+    # date_input = driver.find_element(By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[2]/div/div[2]/div[2]/div/input")
     
-    if date is not None:
-        if progress_callback:
-            progress_callback("📅 Filtering by date...")  
-        date_input_string = date
-        print(f"[DEBUG] Using date string: {date_input_string}")
-    else:
-        date_input_string = ""
+    # if date is not None:
+    #     if progress_callback:
+    #         progress_callback("📅 Filtering by date...")  
+    #     date_input_string = date
+    #     print(f"[DEBUG] Using date string: {date_input_string}")
+    # else:
+    #     date_input_string = ""
  
-    date_input.send_keys(date_input_string)
+    # date_input.send_keys(date_input_string)
 
     time.sleep(3)
 
