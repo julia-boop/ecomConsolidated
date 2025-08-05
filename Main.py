@@ -161,7 +161,7 @@ def get_logiwa_file(job_code=None, date=None, client=None, progress_callback=Non
     
     driver.get("https://app.logiwa.com/en/WMS/OrderCarrierManagement")
 
-    time.sleep(3)  
+    time.sleep(10)  
 
     date_input = driver.find_element(By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[2]/div/div[2]/div[2]/div/input")
     
