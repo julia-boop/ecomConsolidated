@@ -209,22 +209,22 @@ def get_logiwa_file(job_code=None, date=None, client=None, progress_callback=Non
         client_input.clear()
         client_input.send_keys(client)
 
-        # Wait for all options to appear
-        options = wait.until(
-            EC.presence_of_all_elements_located((By.CSS_SELECTOR, "li.ui-sortable label"))
-        )
+        # # Wait for all options to appear
+        # options = wait.until(
+        #     EC.presence_of_all_elements_located((By.CSS_SELECTOR, "li.ui-sortable label"))
+        # )
 
-        # Loop through them and click the one you want
-        for opt in options:
-            if client.lower() in opt.text.lower():  # case insensitive match
-                wait.until(EC.visibility_of(opt))
-                driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", opt)
-                opt.click()
-                break
+        # # Loop through them and click the one you want
+        # for opt in options:
+        #     if client.lower() in opt.text.lower():  # case insensitive match
+        #         wait.until(EC.visibility_of(opt))
+        #         driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", opt)
+        #         opt.click()
+        #         break
 
-        # client_option = wait.until(EC.element_to_be_clickable((By.XPATH, f"//li[contains(@class, 'ui-sortable')]//label[contains(., '{client}')]")))
-        # driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", client_option)
-        # client_option.click()
+        client_option = wait.until(EC.element_to_be_clickable((By.XPATH, f"//li[contains(@class, 'ui-sortable')]//label[contains(., '{client}')]")))
+        driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", client_option)
+        client_option.click()
 
     time.sleep(3)
 
