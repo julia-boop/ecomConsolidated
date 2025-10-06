@@ -301,13 +301,13 @@ def get_logiwa_file(date, job_code, client, progress_callback=None):
 
         # Step 2: Select Client
         progress(f"📦 Selecting client: {client}...")
-        try:
-            xpath = f"//li[contains(@class, 'ui-sortable')]//label[contains(., '{client}')]"
-            client_option = wait.until(EC.element_to_be_clickable((By.XPATH, xpath)))
-            driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", client_option)
-            client_option.click()
-        except TimeoutException:
-            print(f"[ERROR] Could not find client option for: {client}")
+        client_xpath = f"//li[contains(@class, 'ui-sortable')]//label[contains(normalize-space(.), '{client}')]"
+
+        client_option = wait.until(EC.presence_of_element_located((By.XPATH, client_xpath)))
+        driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", client_option)
+
+        wait.until(EC.element_to_be_clickable((By.XPATH, client_xpath))).click()
+
 
         # Step 3: Search by job code
         progress("🔍 Searching job...")
