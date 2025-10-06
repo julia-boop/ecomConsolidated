@@ -22,6 +22,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 from google.oauth2.service_account import Credentials
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -243,6 +244,28 @@ def get_latest_file(directory):
 #     else:
 #         print(f"[ERROR] No files found in the directory {download_path}")
 #         return None
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+def get_chrome_driver():
+    chrome_options = Options()
+    chrome_options.add_argument("--headless=new")  # Use 'new' for Chrome 109+
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--disable-dev-tools")
+    chrome_options.add_argument("--disable-extensions")
+    chrome_options.add_argument("--disable-software-rasterizer")
+    chrome_options.add_argument("--disable-setuid-sandbox")
+    chrome_options.add_argument("--window-size=1920,1080")
+
+    # Optional: avoid detection
+    chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    chrome_options.add_experimental_option("useAutomationExtension", False)
+
+    return webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
 
 def get_logiwa_file(date, job_code, client, progress_callback=None):
@@ -254,13 +277,13 @@ def get_logiwa_file(date, job_code, client, progress_callback=None):
                 print(f"[⚠️ Emit error] {e}")
 
     progress("🚀 Launching browser...")
+    driver = get_chrome_driver()
+    # options = webdriver.ChromeOptions()
+    # options.add_argument("--headless")
+    # options.add_argument("--no-sandbox")
+    # options.add_argument("--disable-dev-shm-usage")
 
-    options = webdriver.ChromeOptions()
-    options.add_argument("--headless")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-
-    driver = webdriver.Chrome(options=options)
+    # driver = webdriver.Chrome(options=options)
     wait = WebDriverWait(driver, 15)
 
     try:
@@ -278,15 +301,13 @@ def get_logiwa_file(date, job_code, client, progress_callback=None):
 
         # Step 2: Select Client
         progress(f"📦 Selecting client: {client}...")
-        client_option_xpath = f"//li[contains(@class, 'ui-sortable')]//label[contains(normalize-space(.), '{client}')]"
         try:
-            client_option = wait.until(EC.element_to_be_clickable((By.XPATH, client_option_xpath)))
+            xpath = f"//li[contains(@class, 'ui-sortable')]//label[contains(., '{client}')]"
+            client_option = wait.until(EC.element_to_be_clickable((By.XPATH, xpath)))
             driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", client_option)
-            time.sleep(0.5)
             client_option.click()
-        except Exception as e:
-            print(f"[❌ Client selection failed] {e}")
-            raise e
+        except TimeoutException:
+            print(f"[ERROR] Could not find client option for: {client}")
 
         # Step 3: Search by job code
         progress("🔍 Searching job...")
