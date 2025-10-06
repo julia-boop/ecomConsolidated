@@ -178,7 +178,12 @@ def get_logiwa_file(job_code=None, date=None, client=None, progress_callback=Non
     if job_code is not None:
         if progress_callback:
             progress_callback("🧑🏼‍💻 Filtering by job code...")  
-        job_input = driver.find_element(By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[1]/div[2]/div[8]/div[2]/input")
+        # job_input = driver.find_element(By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[1]/div[2]/div[8]/div[2]/input")
+        # job_input.send_keys(job_code)
+        job_input = WebDriverWait(driver, 20).until(
+            EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[1]/div[2]/div[8]/div[2]/input"))
+        )
+        job_input.clear()
         job_input.send_keys(job_code)
 
     time.sleep(10)
@@ -191,11 +196,35 @@ def get_logiwa_file(job_code=None, date=None, client=None, progress_callback=Non
         driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", client_button)
         client_button.click()
         time.sleep(1) 
-        client_input = wait.until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[1]/div[2]/div[14]/div[2]/div/ul/li[1]/div/input")))
+        client_input = WebDriverWait(driver, 20).until(
+            EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[1]/div[2]/div[14]/div[2]/div/ul/li[1]/div/input"))
+        )
+        client_input.clear()
         client_input.send_keys(client)
-        client_option = wait.until(EC.element_to_be_clickable((By.XPATH, f"//li[contains(@class, 'ui-sortable')]//label[contains(., '{client}')]")))
-        driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", client_option)
-        client_option.click()
+        # client_input = wait.until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[1]/div[2]/div[14]/div[2]/div/ul/li[1]/div/input")))
+        # client_input.send_keys(client)
+        client_input = WebDriverWait(driver, 20).until(
+            EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[1]/div[2]/div[14]/div[2]/div/ul/li[1]/div/input"))
+        )
+        client_input.clear()
+        client_input.send_keys(client)
+
+        # Wait for all options to appear
+        options = wait.until(
+            EC.presence_of_all_elements_located((By.CSS_SELECTOR, "li.ui-sortable label"))
+        )
+
+        # Loop through them and click the one you want
+        for opt in options:
+            if client.lower() in opt.text.lower():  # case insensitive match
+                wait.until(EC.visibility_of(opt))
+                driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", opt)
+                opt.click()
+                break
+
+        # client_option = wait.until(EC.element_to_be_clickable((By.XPATH, f"//li[contains(@class, 'ui-sortable')]//label[contains(., '{client}')]")))
+        # driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", client_option)
+        # client_option.click()
 
     time.sleep(3)
 
