@@ -294,13 +294,36 @@ def get_logiwa_file(date, job_code, client, progress_callback=None):
 
         # Step 1: Login
         progress("🔐 Logging in...")
-        email_input = wait.until(EC.presence_of_element_located((By.ID, "Email")))
+        email_input = wait.until(EC.presence_of_element_located((By.ID, "UserName")))
         password_input = driver.find_element(By.ID, "Password")
-        login_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Login')]")
-
+        login_button = driver.find_element(By.ID, "LoginButton")
         email_input.send_keys(os.getenv("LOGIWA_USER"))
         password_input.send_keys(os.getenv("LOGIWA_PASS"))
         login_button.click()
+        
+        time.sleep(3)
+
+        login_handle = None
+
+        try:
+            login_handle = driver.find_element(By.CSS_SELECTOR, ".bootbox-body")
+        except Exception as e:
+            print("No login handle needed")
+
+        if login_handle:
+            buttons = driver.find_elements(By.CLASS_NAME, "btn-success")
+            for b in buttons:
+                text = b.text
+                if text == "Ok":
+                    b.click()
+                    time.sleep(3)
+        else:
+            print("No login handle needed")
+
+
+
+        driver.get("https://app.logiwa.com/en/WMS/OrderCarrierManagement")
+
 
         # Step 2: Select Client
         progress(f"📦 Selecting client: {client}...")
