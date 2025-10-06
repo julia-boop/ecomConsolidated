@@ -185,6 +185,7 @@ def get_logiwa_file(job_code=None, date=None, client=None, progress_callback=Non
         )
         job_input.clear()
         job_input.send_keys(job_code)
+        print("Llego hasta job code")
 
     time.sleep(10)
 
@@ -225,6 +226,7 @@ def get_logiwa_file(job_code=None, date=None, client=None, progress_callback=Non
         client_option = wait.until(EC.element_to_be_clickable((By.XPATH, f"//li[contains(@class, 'ui-sortable')]//label[contains(., '{client}')]")))
         driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", client_option)
         client_option.click()
+        print("Llego hasta client")
 
     time.sleep(3)
 
