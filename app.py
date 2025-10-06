@@ -169,9 +169,6 @@
 
 # socketio.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
 
-import eventlet
-eventlet.monkey_patch()
-
 from flask import Flask, render_template, send_file
 from flask_socketio import SocketIO, emit
 from Main import get_logiwa_file, process_file
@@ -199,7 +196,10 @@ if os.path.exists(RUN_TIMES_FILE):
 # Flask app setup
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv("SOCKETIO_SECRET", "supersecretkey")
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet")
+
+# ❌ Previously: async_mode="eventlet"
+# ✅ Now: async_mode="gevent"
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode="gevent")
 
 @app.route('/')
 def index():
@@ -228,7 +228,6 @@ def handle_generate(data):
     start_time = time.time()
 
     try:
-        # date = data.get('date', '')
         job_code = data.get('job_code', '')
         client = data.get('client', '')
 
@@ -254,17 +253,15 @@ def handle_generate(data):
         pdf_bytes, filename = generate_pdf_report_for_client(client_df, return_bytes=True)
         generated_pdfs[filename] = pdf_bytes
 
-        # Emit success
         emit("done", {"pdf_url": f"/download/{filename}"})
 
-        # Track time
         elapsed = round(time.time() - start_time, 2)
         run_times.append(elapsed)
         with open(RUN_TIMES_FILE, "w") as f:
             json.dump(run_times, f)
 
     except Exception as e:
-        print("Error:", e)
+        print("❌ Error:", e)
         emit("error", str(e))
 
 def generate_pdf_report_for_client(client_df, return_bytes=False):
@@ -326,8 +323,7 @@ def generate_pdf_report_for_client(client_df, return_bytes=False):
     if return_bytes:
         pdf_buffer = BytesIO()
         HTML(string=full_html).write_pdf(pdf_buffer)
-        
-        # Clean up barcode folder after PDF creation
+
         if os.path.exists('barcodes'):
             shutil.rmtree('barcodes')
 
@@ -335,11 +331,7 @@ def generate_pdf_report_for_client(client_df, return_bytes=False):
 
     return None, filename
 
-# Production entry point
+# ✅ Clean production entry point
 if __name__ == "__main__":
-    import eventlet
-    import eventlet.wsgi
-
     port = int(os.environ.get("PORT", 5000))
     socketio.run(app, host="0.0.0.0", port=port)
-
