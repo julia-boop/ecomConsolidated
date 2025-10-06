@@ -235,9 +235,6 @@ def get_logiwa_file(job_code=None, date=None, client=None, progress_callback=Non
         return None
 
 
-
-
-
 def process_file(file, progress_callback=None):
 
     if progress_callback:
