@@ -93,276 +93,147 @@ def get_latest_file(directory):
     return latest_file
 
 
-# def get_logiwa_file(job_code=None, date=None, client=None, progress_callback=None):
+def get_logiwa_file(job_code=None, date=None, client=None, progress_callback=None):
 
-#     chromedriver_path = chromedriver_autoinstaller.install()
-#     service = Service(chromedriver_path)
-
-#     chrome_options = Options()
-#     chrome_options.add_argument("--headless=new")  
-#     chrome_options.add_argument("--no-sandbox")
-#     chrome_options.add_argument("--disable-dev-shm-usage")
-#     #For develpment
-#     # chrome_options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-#     #For production
-#     # chrome_options.binary_location = "/usr/bin/chromium"
-#     chrome_options.add_experimental_option("prefs", {
-#         "download.default_directory": download_path,
-#         "download.prompt_for_download": False,
-#         "directory_upgrade": True,
-#         "safebrowsing.enabled": True
-#     })
-
-#     # service = Service(ChromeDriverManager().install())
-#     driver = webdriver.Chrome(service=service, options=chrome_options)
-
-#     if progress_callback:
-#         progress_callback("🔐 Logging in to Logiwa...")
-
-#     driver.get("https://app.logiwa.com/en/Login")
-
-#     username_field = driver.find_element(By.ID, "UserName")
-#     password_field = driver.find_element(By.ID, "Password")
-
-#     print(username_field)
-#     print(password_field)
-
-#     time.sleep(3)
-
-#     user = os.getenv("LOGIWA_USERNAME")
-#     password = os.getenv("LOGIWA_PASSWORD")
-
-#     username_field.send_keys(user)
-#     password_field.send_keys(password)
-
-#     login_button = driver.find_element(By.ID, "LoginButton")
-#     login_button.click()
-
-#     time.sleep(3)
-
-#     login_handle = None
-
-#     try:
-#         login_handle = driver.find_element(By.CSS_SELECTOR, ".bootbox-body")
-#     except Exception as e:
-#         print("No login handle needed")
-
-#     if login_handle:
-#         buttons = driver.find_elements(By.CLASS_NAME, "btn-success")
-#         for b in buttons:
-#             text = b.text
-#             if text == "Ok":
-#                 b.click()
-#                 time.sleep(3)
-#     else:
-#         print("No login handle needed")
-
-#     if progress_callback:
-#         progress_callback("🔄 Redirecting to order operations...")    
-    
-#     driver.get("https://app.logiwa.com/en/WMS/OrderCarrierManagement")
-
-#     time.sleep(20)  
-
-#     # date_input = driver.find_element(By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[2]/div/div[2]/div[2]/div/input")
-    
-#     # if date is not None:
-#     #     if progress_callback:
-#     #         progress_callback("📅 Filtering by date...")  
-#     #     date_input_string = date
-#     #     print(f"[DEBUG] Using date string: {date_input_string}")
-#     # else:
-#     #     date_input_string = ""
- 
-#     # date_input.send_keys(date_input_string)
-#     print("Anda el print")
-#     if job_code is not None:
-#         if progress_callback:
-#             progress_callback("🧑🏼‍💻 Filtering by job code...")  
-#         job_input = driver.find_element(By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[1]/div[2]/div[8]/div[2]/input")
-#         job_input.send_keys(job_code)
-#         print("Llego hasta job code")
-
-#     time.sleep(10)
-
-#     if client is not None:
-#         if progress_callback:
-#             progress_callback("📩 Filtering by client...")  
-#         wait = WebDriverWait(driver, 15)
-#         client_button = wait.until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[1]/div[2]/div[14]/div[2]/div/button")))
-#         driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", client_button)
-#         client_button.click()
-#         time.sleep(1) 
-#         client_input = WebDriverWait(driver, 20).until(
-#             EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[1]/div[2]/div[14]/div[2]/div/ul/li[1]/div/input"))
-#         )
-#         client_input.clear()
-#         client_input.send_keys(client)
-#         client_input = wait.until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[1]/div[2]/div[14]/div[2]/div/ul/li[1]/div/input")))
-#         client_input.send_keys(client)
-#         client_option = wait.until(EC.element_to_be_clickable((By.XPATH, f"//li[contains(@class, 'ui-sortable')]//label[contains(., '{client}')]")))
-#         driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", client_option)
-#         client_option.click()
-#         print("Llego hasta client")
-
-#     time.sleep(3)
-
-#     search_btn = driver.find_element(By.XPATH, "/html/body/div[1]/div[2]/div/div/div[1]/button[1]")
-#     driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", search_btn)
-#     search_btn.click()
-
-#     time.sleep(5)
-
-#     if progress_callback:
-#             progress_callback("📁 Downloading file...")  
-
-#     download_btn = WebDriverWait(driver, 15).until(
-#         EC.element_to_be_clickable((
-#             By.XPATH,
-#             "/html/body/div[1]/div[2]/div/div/div[3]/div[2]/div[1]/div/div[5]/div/table/tbody/tr/td[1]/table/tbody/tr/td[1]/div/span"
-#         ))
-#     )
-#     driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", download_btn)
-#     driver.execute_script("arguments[0].click();", download_btn)
-
-#     time.sleep(10)
-#     wait_for_download_to_finish(download_path)
-#     time.sleep(10)
-
-#     driver.quit()
-    
-#     latest_file = get_latest_file(download_path)
-
-#     if latest_file:
-#         print(f"[DEBUG] Latest downloaded file: {latest_file}")
-        
-#         with open(latest_file, "rb") as f:
-#             file_bytes = f.read()
-
-#         os.remove(latest_file)  # Cleanup to avoid saving locally
-#         return BytesIO(file_bytes)
-#     else:
-#         print(f"[ERROR] No files found in the directory {download_path}")
-#         return None
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
-
-def get_chrome_driver():
     chromedriver_path = chromedriver_autoinstaller.install()
+    service = Service(chromedriver_path)
+
     chrome_options = Options()
-    chrome_options.add_argument("--headless=new")  # Use 'new' for Chrome 109+
+    chrome_options.add_argument("--headless=new")  
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.add_argument("--disable-gpu")
-    chrome_options.add_argument("--disable-dev-tools")
-    chrome_options.add_argument("--disable-extensions")
-    chrome_options.add_argument("--disable-software-rasterizer")
-    chrome_options.add_argument("--disable-setuid-sandbox")
-    chrome_options.add_argument("--window-size=1920,1080")
-    chrome_options.add_argument("--remote-debugging-port=9222")
+    #For develpment
+    # chrome_options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+    #For production
+    chrome_options.binary_location = "/usr/bin/chromium"
+    chrome_options.add_experimental_option("prefs", {
+        "download.default_directory": download_path,
+        "download.prompt_for_download": False,
+        "directory_upgrade": True,
+        "safebrowsing.enabled": True
+    })
 
-    # Optional: avoid detection
-    chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
-    chrome_options.add_experimental_option("useAutomationExtension", False)
+    # service = Service(ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=service, options=chrome_options)
 
-    return webdriver.Chrome(service=Service(chromedriver_path), options=chrome_options)
+    if progress_callback:
+        progress_callback("🔐 Logging in to Logiwa...")
 
+    driver.get("https://app.logiwa.com/en/Login")
 
+    username_field = driver.find_element(By.ID, "UserName")
+    password_field = driver.find_element(By.ID, "Password")
 
-def get_logiwa_file(date, job_code, client, progress_callback=None):
-    def progress(msg):
-        if progress_callback:
-            try:
-                progress_callback(msg)
-            except Exception as e:
-                print(f"[⚠️ Emit error] {e}")
+    print(username_field)
+    print(password_field)
 
-    progress("🚀 Launching browser...")
-    driver = get_chrome_driver()
-    # options = webdriver.ChromeOptions()
-    # options.add_argument("--headless")
-    # options.add_argument("--no-sandbox")
-    # options.add_argument("--disable-dev-shm-usage")
+    time.sleep(3)
 
-    # driver = webdriver.Chrome(options=options)
-    wait = WebDriverWait(driver, 15)
+    user = os.getenv("LOGIWA_USERNAME")
+    password = os.getenv("LOGIWA_PASSWORD")
+
+    username_field.send_keys(user)
+    password_field.send_keys(password)
+
+    login_button = driver.find_element(By.ID, "LoginButton")
+    login_button.click()
+
+    time.sleep(3)
+
+    login_handle = None
 
     try:
-        driver.get("https://app.logiwa.com/account/logiwa/login")
-
-        # Step 1: Login
-        progress("🔐 Logging in...")
-        email_input = wait.until(EC.presence_of_element_located((By.ID, "UserName")))
-        password_input = driver.find_element(By.ID, "Password")
-        login_button = driver.find_element(By.ID, "LoginButton")
-        email_input.send_keys(os.getenv("LOGIWA_USER"))
-        password_input.send_keys(os.getenv("LOGIWA_PASS"))
-        login_button.click()
-        
-        time.sleep(3)
-
-        login_handle = None
-
-        try:
-            login_handle = driver.find_element(By.CSS_SELECTOR, ".bootbox-body")
-        except Exception as e:
-            print("No login handle needed")
-
-        if login_handle:
-            buttons = driver.find_elements(By.CLASS_NAME, "btn-success")
-            for b in buttons:
-                text = b.text
-                if text == "Ok":
-                    b.click()
-                    time.sleep(3)
-        else:
-            print("No login handle needed")
-
-
-
-        driver.get("https://app.logiwa.com/en/WMS/OrderCarrierManagement")
-
-
-        # Step 2: Select Client
-        progress(f"📦 Selecting client: {client}...")
-        client_xpath = f"//li[contains(@class, 'ui-sortable')]//label[contains(normalize-space(.), '{client}')]"
-
-        client_option = wait.until(EC.presence_of_element_located((By.XPATH, client_xpath)))
-        driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", client_option)
-
-        wait.until(EC.element_to_be_clickable((By.XPATH, client_xpath))).click()
-
-
-        # Step 3: Search by job code
-        progress("🔍 Searching job...")
-        job_input = wait.until(EC.element_to_be_clickable((By.ID, "txtSearchJobCode")))
-        job_input.clear()
-        job_input.send_keys(job_code)
-
-        search_button = driver.find_element(By.ID, "btnSearch")
-        search_button.click()
-
-        # Step 4: Wait and download file
-        progress("📥 Downloading file...")
-        download_button = wait.until(EC.element_to_be_clickable((By.ID, "btnExportToExcel")))
-        download_button.click()
-
-        # Wait for download to complete or simulate file path (replace with your logic)
-        time.sleep(3)
-        downloaded_file_path = "/app/temp/report.xlsx"
-        progress("✅ File downloaded.")
-
-        return downloaded_file_path
-
+        login_handle = driver.find_element(By.CSS_SELECTOR, ".bootbox-body")
     except Exception as e:
-        print(f"[🚨 Fatal error in get_logiwa_file()] {e}")
-        raise e
+        print("No login handle needed")
 
-    finally:
-        driver.quit()
-        progress("🧹 Browser closed.")
+    if login_handle:
+        buttons = driver.find_elements(By.CLASS_NAME, "btn-success")
+        for b in buttons:
+            text = b.text
+            if text == "Ok":
+                b.click()
+                time.sleep(3)
+    else:
+        print("No login handle needed")
+
+    if progress_callback:
+        progress_callback("🔄 Redirecting to order operations...")    
+    
+    driver.get("https://app.logiwa.com/en/WMS/OrderCarrierManagement")
+
+    time.sleep(20)  
+
+    print("Anda el print")
+    if job_code is not None:
+        if progress_callback:
+            progress_callback("🧑🏼‍💻 Filtering by job code...")  
+        job_input = driver.find_element(By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[1]/div[2]/div[8]/div[2]/input")
+        job_input.send_keys(job_code)
+        print("Llego hasta job code")
+
+    time.sleep(10)
+
+    if client is not None:
+        if progress_callback:
+            progress_callback("📩 Filtering by client...")  
+        wait = WebDriverWait(driver, 15)
+        client_button = wait.until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[1]/div[2]/div[14]/div[2]/div/button")))
+        driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", client_button)
+        client_button.click()
+        time.sleep(1) 
+        client_input = WebDriverWait(driver, 20).until(
+            EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[1]/div[2]/div[14]/div[2]/div/ul/li[1]/div/input"))
+        )
+        client_input.clear()
+        client_input.send_keys(client)
+        client_input = wait.until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[1]/div[2]/div[14]/div[2]/div/ul/li[1]/div/input")))
+        client_input.send_keys(client)
+        client_option = wait.until(EC.element_to_be_clickable((By.XPATH, f"//li[contains(@class, 'ui-sortable')]//label[contains(., '{client}')]")))
+        driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", client_option)
+        client_option.click()
+        print("Llego hasta client")
+
+    time.sleep(3)
+
+    search_btn = driver.find_element(By.XPATH, "/html/body/div[1]/div[2]/div/div/div[1]/button[1]")
+    driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", search_btn)
+    search_btn.click()
+
+    time.sleep(5)
+
+    if progress_callback:
+            progress_callback("📁 Downloading file...")  
+
+    download_btn = WebDriverWait(driver, 15).until(
+        EC.element_to_be_clickable((
+            By.XPATH,
+            "/html/body/div[1]/div[2]/div/div/div[3]/div[2]/div[1]/div/div[5]/div/table/tbody/tr/td[1]/table/tbody/tr/td[1]/div/span"
+        ))
+    )
+    driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", download_btn)
+    driver.execute_script("arguments[0].click();", download_btn)
+
+    time.sleep(10)
+    wait_for_download_to_finish(download_path)
+    time.sleep(10)
+
+    driver.quit()
+    
+    latest_file = get_latest_file(download_path)
+
+    if latest_file:
+        print(f"[DEBUG] Latest downloaded file: {latest_file}")
+        
+        with open(latest_file, "rb") as f:
+            file_bytes = f.read()
+
+        os.remove(latest_file)  # Cleanup to avoid saving locally
+        return BytesIO(file_bytes)
+    else:
+        print(f"[ERROR] No files found in the directory {download_path}")
+        return None
+
 
 
 
