@@ -175,15 +175,13 @@ def get_logiwa_file(job_code=None, date=None, client=None, progress_callback=Non
  
     # date_input.send_keys(date_input_string)
 
-    time.sleep(3)
-
     if job_code is not None:
         if progress_callback:
             progress_callback("🧑🏼‍💻 Filtering by job code...")  
         job_input = driver.find_element(By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[1]/div[2]/div[8]/div[2]/input")
         job_input.send_keys(job_code)
 
-    time.sleep(3)
+    time.sleep(10)
 
     if client is not None:
         if progress_callback:
