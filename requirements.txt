@@ -53,7 +53,7 @@ RapidFuzz==3.13.0
 requests==2.32.3
 requests-oauthlib==2.0.0
 rsa==4.9.1
-selenium==4.33.0
+selenium==4.25.0
 simple-websocket==1.1.0
 six==1.17.0
 sniffio==1.3.1
@@ -69,7 +69,7 @@ webdriver-manager==4.0.2
 webencodings==0.5.1
 websocket-client==1.8.0
 Werkzeug==3.1.3
-weasyprint==62
+weasyprint==62.3
 wsproto==1.2.0
 xlsx2html==0.6.2
 zopfli==0.2.3.post1
