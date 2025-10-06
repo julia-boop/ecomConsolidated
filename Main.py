@@ -250,6 +250,7 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
 def get_chrome_driver():
+    chromedriver_path = chromedriver_autoinstaller.install()
     chrome_options = Options()
     chrome_options.add_argument("--headless=new")  # Use 'new' for Chrome 109+
     chrome_options.add_argument("--no-sandbox")
@@ -260,12 +261,14 @@ def get_chrome_driver():
     chrome_options.add_argument("--disable-software-rasterizer")
     chrome_options.add_argument("--disable-setuid-sandbox")
     chrome_options.add_argument("--window-size=1920,1080")
+    chrome_options.add_argument("--remote-debugging-port=9222")
 
     # Optional: avoid detection
     chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
     chrome_options.add_experimental_option("useAutomationExtension", False)
 
-    return webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+    return webdriver.Chrome(service=Service(chromedriver_path), options=chrome_options)
+
 
 
 def get_logiwa_file(date, job_code, client, progress_callback=None):
