@@ -309,6 +309,7 @@ def process_file(file, progress_callback=None):
     # Add barcode columns
     df.insert(df.columns.get_loc("Logiwa Order #") + 1, "Logiwa Barcode", "")
     df.insert(df.columns.get_loc("Job Code") + 1, "Job Barcode", "")
+    df.drop("Job Code", axis=1)
 
     for idx, row in df.iterrows():
         # Logiwa Barcode
