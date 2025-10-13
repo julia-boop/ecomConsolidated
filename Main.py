@@ -170,6 +170,7 @@ def get_logiwa_file(job_code=None, date=None, client=None, progress_callback=Non
     if job_code is not None:
         if progress_callback:
             progress_callback("🧑🏼‍💻 Filtering by job code...")  
+        wait = WebDriverWait(driver, 15)
         job_input = wait.until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[1]/div[2]/div[7]/div[2]/input")))
         driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", job_input)
         job_input.send_keys(job_code)
@@ -178,6 +179,7 @@ def get_logiwa_file(job_code=None, date=None, client=None, progress_callback=Non
     time.sleep(10)
 
     if client is not None:
+        wait = WebDriverWait(driver, 15)
         if progress_callback:
             progress_callback("📩 Filtering by client...")  
         client_button = wait.until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[1]/div[2]/div[14]/div[2]/div/button")))
