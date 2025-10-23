@@ -199,7 +199,7 @@ app.config['SECRET_KEY'] = os.getenv("SOCKETIO_SECRET", "supersecretkey")
 
 # ❌ Previously: async_mode="eventlet"
 # ✅ Now: async_mode="gevent"
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode="gevent")
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
 
 @app.route('/')
 def index():
@@ -234,7 +234,7 @@ def handle_generate(data):
         def progress(msg):
             emit("progress", msg)
 
-        file_path = get_logiwa_file(job_code=job_code, date=None, client=client, progress_callback=progress)
+        file_path = get_logiwa_file(job_code=job_code, client=client, progress_callback=progress)
 
         if not file_path:
             emit("error", "No file downloaded from Logiwa.", broadcast=True)

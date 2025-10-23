@@ -1,53 +1,29 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #IMPORTS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-import pandas as pd
-import smtplib
 import os
-import gspread
-import openpyxl
 import tempfile
 import time
-import base64
-import re
-import json
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
 from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
-from google.oauth2.service_account import Credentials
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.application import MIMEApplication
 from io import BytesIO
 from dotenv import load_dotenv
-from datetime import datetime, timedelta
-import smtplib
-import glob
-from email.message import EmailMessage
-from email.utils import formataddr
-import mimetypes
 import os
 import pandas as pd
-from openpyxl import load_workbook
-from openpyxl.styles import Font, Alignment
 import pathlib
-import pandas as pd
 from barcode import get
 from barcode.writer import ImageWriter
-from datetime import datetime
-from flask import send_file
 from io import BytesIO
 import io
 import os
+import ssl
+import certifi
+
+ssl_context = ssl.create_default_context(cafile=certifi.where())
 
 
 #For production
@@ -81,7 +57,7 @@ def wait_for_download_to_finish(download_path, timeout=1200):
     raise TimeoutError("Download did not complete within timeout.")
 
 def get_latest_file(directory):
-    valid_extensions = ('.xlsx', '.xls', '.csv')  # add .csv if needed
+    valid_extensions = ('.xlsx', '.xls', '.csv') 
     files = [
         os.path.join(directory, f)
         for f in os.listdir(directory)
@@ -93,13 +69,13 @@ def get_latest_file(directory):
     return latest_file
 
 
-def get_logiwa_file(job_code=None, date=None, client=None, progress_callback=None):
+def get_logiwa_file(job_code=None, client=None, progress_callback=None):
 
     chromedriver_path = chromedriver_autoinstaller.install()
     service = Service(chromedriver_path)
 
     chrome_options = Options()
-    chrome_options.add_argument("--headless=new")  
+    # chrome_options.add_argument("--headless=new")  
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     #For develpment
@@ -165,16 +141,32 @@ def get_logiwa_file(job_code=None, date=None, client=None, progress_callback=Non
     driver.get("https://app.logiwa.com/en/WMS/OrderCarrierManagement")
 
     time.sleep(20)  
-
-    print("Anda el print")
+    
     if job_code is not None:
-        if progress_callback:
-            progress_callback("🧑🏼‍💻 Filtering by job code...")  
-        wait = WebDriverWait(driver, 15)
-        job_input = wait.until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[1]/div[2]/div[7]/div[2]/input")))
-        driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", job_input)
-        job_input.send_keys(job_code)
-        print("Llego hasta job code")
+        try:
+            if progress_callback:
+                progress_callback(f"🧑🏼‍💻 Filtering by job code: {job_code}...")
+
+            wait = WebDriverWait(driver, 10)
+            job_input = wait.until(EC.element_to_be_clickable((By.ID, "JobCode")))
+
+            print(job_input)
+            driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", job_input)
+            job_input.clear()
+            job_input.click()
+            job_input.send_keys(job_code)
+            if progress_callback:
+                progress_callback("✅ Job code field filled successfully.")
+
+        except Exception as e:
+            # Emit error with full detail
+            error_msg = f"❌ Error while filtering by job code '{job_code}': {str(e)}"
+            print(error_msg)
+            if progress_callback:
+                progress_callback(error_msg)
+            # Optionally re-raise if you want to stop execution here
+            # raise
+
 
     time.sleep(10)
 
@@ -187,12 +179,8 @@ def get_logiwa_file(job_code=None, date=None, client=None, progress_callback=Non
         driver.execute_script("arguments[0].click();", client_button)
 
         time.sleep(1) 
-        client_input = WebDriverWait(driver, 20).until(
-            EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[1]/div[2]/div[14]/div[2]/div/ul/li[1]/div/input"))
-        )
-        client_input.clear()
-        client_input.send_keys(client)
         client_input = wait.until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[1]/div[2]/div[14]/div[2]/div/ul/li[1]/div/input")))
+        client_input.clear()
         client_input.send_keys(client)
         client_option = wait.until(EC.element_to_be_clickable((By.XPATH, f"//li[contains(@class, 'ui-sortable')]//label[contains(., '{client}')]")))
         driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", client_option)
@@ -222,6 +210,7 @@ def get_logiwa_file(job_code=None, date=None, client=None, progress_callback=Non
     time.sleep(10)
     wait_for_download_to_finish(download_path)
     time.sleep(10)
+    print(download_path)
 
     driver.quit()
     
