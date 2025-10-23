@@ -199,7 +199,7 @@ app.config['SECRET_KEY'] = os.getenv("SOCKETIO_SECRET", "supersecretkey")
 
 # ❌ Previously: async_mode="eventlet"
 # ✅ Now: async_mode="gevent"
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode="gevent")
 
 @app.route('/')
 def index():
