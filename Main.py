@@ -268,7 +268,7 @@ def process_file(file, progress_callback=None):
     # Step 1: Filter by "Order Type"
     order_type_col = 'Order Type'
     df[order_type_col] = df[order_type_col].astype(str).str.strip().str.title()
-    df = df[df[order_type_col].isin(["E-Commerce Order", "Shopify Order"])]
+    df = df[df[order_type_col].isin(["E-Commerce Order", "Shopify Order", "Ecommerce Test"])]
 
     # Step 2: Filter by "Order Status"
     order_status_col = 'Order Status'
