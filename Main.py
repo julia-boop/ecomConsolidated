@@ -75,7 +75,7 @@ def get_logiwa_file(job_code=None, client=None, progress_callback=None):
     service = Service(chromedriver_path)
 
     chrome_options = Options()
-    chrome_options.add_argument("--headless=new")  
+    # chrome_options.add_argument("--headless=new")  
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument(f"--user-data-dir={user_data_dir}")
@@ -176,12 +176,12 @@ def get_logiwa_file(job_code=None, client=None, progress_callback=None):
         wait = WebDriverWait(driver, 15)
         if progress_callback:
             progress_callback("📩 Filtering by client...")  
-        client_button = wait.until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[1]/div[2]/div[14]/div[2]/div/button")))
+        client_button = wait.until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[1]/div[2]/div[13]/div[2]/div/button")))
         driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", client_button)
         driver.execute_script("arguments[0].click();", client_button)
 
         time.sleep(1) 
-        client_input = wait.until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[1]/div[2]/div[14]/div[2]/div/ul/li[1]/div/input")))
+        client_input = wait.until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[1]/div[2]/div[13]/div[2]/div/ul/li[1]/div/input")))
         client_input.clear()
         client_input.send_keys(client)
         client_option = wait.until(EC.element_to_be_clickable((By.XPATH, f"//li[contains(@class, 'ui-sortable')]//label[contains(., '{client}')]")))
@@ -267,8 +267,14 @@ def process_file(file, progress_callback=None):
 
     # Step 1: Filter by "Order Type"
     order_type_col = 'Order Type'
+    client_col = 'Client'
     df[order_type_col] = df[order_type_col].astype(str).str.strip().str.title()
-    df = df[df[order_type_col].isin(["E-Commerce Order", "Shopify Order", "Ecommerce Test"])]
+    df[client_col] = df[client_col].astype(str).str.strip()
+    allowed_order_types = ["E-Commerce Order", "Shopify Order", "Ecommerce Test"]
+    df = df[
+        (df[order_type_col].isin(allowed_order_types)) |
+        ((df[order_type_col] == "B2B Order") & (df[client_col] == "Brodie Cashmere Ltd"))
+    ]
 
     # Step 2: Filter by "Order Status"
     order_status_col = 'Order Status'

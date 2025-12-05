@@ -240,7 +240,7 @@ def handle_generate(data):
             emit("error", "No file downloaded from Logiwa.", broadcast=True)
             return
 
-        df = process_file(file_path, progress_callback=progress)
+        df = process_file("/Users/julia/Documents/Python/EcomContent/orderOperations/OrderOperations-Bronze.xlsx", progress_callback=progress)
         if df is None or df.empty:
             emit("error", "No data after processing.", broadcast=True)
             return
