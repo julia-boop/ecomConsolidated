@@ -173,21 +173,29 @@ def get_logiwa_file(job_code=None, client=None, progress_callback=None):
     time.sleep(10)
 
     if client is not None:
-        wait = WebDriverWait(driver, 15)
-        if progress_callback:
-            progress_callback("📩 Filtering by client...")  
-        client_button = wait.until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[1]/div[2]/div[13]/div[2]/div/button")))
-        driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", client_button)
-        driver.execute_script("arguments[0].click();", client_button)
+        try: 
+            wait = WebDriverWait(driver, 15)
+            if progress_callback:
+                progress_callback("📩 Filtering by client...")  
+            client_button = wait.until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[1]/div[2]/div[13]/div[2]/div/button")))
+            driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", client_button)
+            driver.execute_script("arguments[0].click();", client_button)
 
-        time.sleep(1) 
-        client_input = wait.until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[1]/div[2]/div[13]/div[2]/div/ul/li[1]/div/input")))
-        client_input.clear()
-        client_input.send_keys(client)
-        client_option = wait.until(EC.element_to_be_clickable((By.XPATH, f"//li[contains(@class, 'ui-sortable')]//label[contains(., '{client}')]")))
-        driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", client_option)
-        client_option.click()
-        print("Llego hasta client")
+            time.sleep(1) 
+            client_input = wait.until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div[2]/div/div/div[3]/form/div/div[1]/div[2]/div[13]/div[2]/div/ul/li[1]/div/input")))
+            client_input.clear()
+            client_input.send_keys(client)
+            client_option = wait.until(EC.element_to_be_clickable((By.XPATH, f"//li[contains(@class, 'ui-sortable')]//label[contains(., '{client}')]")))
+            driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", client_option)
+            client_option.click()
+            if progress_callback:
+                progress_callback("✅ Client field filled successfully.")  
+        except Exception as e:
+            error_msg = f"❌ Error while filtering by client '{client}': {str(e)}"
+            print(error_msg)
+            if progress_callback:
+                progress_callback(error_msg)
+
 
     time.sleep(3)
 
